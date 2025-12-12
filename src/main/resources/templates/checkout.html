@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org">
+
+<div th:replace="~{base :: head}"></div>
+
+<body>
+
+    <!-- Navbar -->
+    <div th:replace="~{base :: navbar}"></div>
+
+    <!-- Header -->
+    <div th:replace="~{base :: header(text='Check Out')}"></div>
+
+    <!-- Checkout Section -->
+    <div class="container-fluid py-5">
+        <div class="container">
+
+            <div class="section-title">
+                <h4 th:text="${booked.name}"
+                    class="text-primary text-uppercase"
+                    style="letter-spacing: 5px;">
+                    Reservation Information
+                </h4>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-body">
+
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Phone Number</th>
+                                <th>Email</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>People</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td th:text="${booked.id}">1</td>
+                                <td th:text="${booked.name}"></td>
+                                <td th:text="${booked.phoneNumber}"></td>
+                                <td th:text="${booked.email}"></td>
+                                <td th:text="${booked.date}"></td>
+                                <td th:text="${booked.time}"></td>
+                                <td th:text="${booked.person}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div th:replace="~{base :: footer}"></div>
+
+    <!-- Scripts -->
+    <div th:replace="~{base :: script}"></div>
+
+</body>
+</html>
