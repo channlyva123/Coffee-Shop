@@ -6,17 +6,10 @@ plugins {
 
 group = 'com.setec'
 version = '0.0.1-SNAPSHOT'
-description = 'Demo project for Spring Boot'
 
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
     }
 }
 
@@ -29,8 +22,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    // PostgreSQL (Render FREE)
-    implementation 'org.postgresql:postgresql'
+    // PostgreSQL
+    runtimeOnly 'org.postgresql:postgresql:42.6.0'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok'
@@ -46,7 +39,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
-
 
 tasks.named('test') {
     useJUnitPlatform()
