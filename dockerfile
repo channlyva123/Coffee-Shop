@@ -1,27 +1,27 @@
-# ---- Build stage ----
-FROM eclipse-temurin:21-jdk AS build
+# Use OpenJDK 21
+FROM eclipse-temurin:21-jdk-jammy
 
+# Set working directory
 WORKDIR /app
 
-COPY gradlew .
-COPY gradle gradle
+# Copy Gradle wrapper and build files
+COPY gradlew build.gradle settings.gradle ./
+COPY gradle ./gradle
+
+# Copy source code
+COPY src ./src
+
+# Make gradlew executable
 RUN chmod +x gradlew
 
-COPY build.gradle* settings.gradle* ./
-RUN ./gradlew dependencies --no-daemon || true
+# Build the app without running tests
+RUN ./gradlew build --no-daemon -x test
 
-COPY . .
-RUN chmod +x gradlew
-RUN ./gradlew clean build -x test --no-daemon
+# Set environment variable for Spring Boot port
+ENV PORT=8080
 
-
-# ---- Run stage ----
-FROM eclipse-temurin:21-jre
-
-WORKDIR /app
-
-COPY --from=build /app/build/libs/*.jar app.jar
-
+# Expose port
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Start the app
+CMD ["java", "-jar", "build/libs/coffee-shop-0.0.1-SNAPSHOT.jar"]
