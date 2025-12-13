@@ -1,35 +1,52 @@
-# ---- Build Stage ----
-FROM gradle:8-jdk21 AS build   # FIX: use JDK 21
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.7'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
 
-WORKDIR /app
+group = 'com.setec'
+version = '0.0.1-SNAPSHOT'
+description = 'Demo project for Spring Boot'
 
-# Copy Gradle wrapper FIRST
-COPY gradlew .
-COPY gradle gradle
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
-# FIX: give execute permission
-RUN chmod +x gradlew
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
 
-# Copy Gradle config files
-COPY build.gradle* .
-COPY settings.gradle* .
+repositories {
+    mavenCentral()
+}
 
-# Pre-download dependencies (optional)
-RUN ./gradlew dependencies --no-daemon || true
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-# Copy the entire project (this will NOT overwrite gradlew now)
-COPY . .
+    // PostgreSQL (Render FREE)
+    runtimeOnly 'org.postgresql:postgresql'
 
-# Build the project
-RUN ./gradlew clean build -x test --no-daemon
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 
+    // Dev tools
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-# ---- Run Stage ----
-FROM eclipse-temurin:21-jre   # FIX: runtime must match build version
+    // Telegram Bot
+    implementation 'com.github.pengrad:java-telegram-bot-api:9.2.1'
 
-WORKDIR /app
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
 
-COPY --from=build /app/build/libs/*.jar app.jar
-
-EXPOSE 8080
-CMD ["java", "-jar", "app.jar"]
+tasks.named('test') {
+    useJUnitPlatform()
+}
